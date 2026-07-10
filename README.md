@@ -1,50 +1,76 @@
-# E-Broke — Planning Phase
+# E-Broke — Project Proposal
 
-## Hackathon Context
-**Prompt:** AI for Social Good  
-**Primary Focus:** Helping college students reduce waste by giving away useful items for free within their campus community.
+## Description
+E-Broke is a student-only, free-item exchange platform for San Francisco State University (SFSU). The app helps students give away useful items they no longer need and helps other students find those items at no cost. Users sign in with SFSU email verification to keep the community local and trusted.
 
-## General Target Categories (Team Brainstorm)
-- Giving stuff away / reducing waste
-- Looking for someone to go to an event with
-- Finding non-profits to volunteer at
+## Pain Points Solved
+1. **Campus waste from usable items being discarded**
+   - Students frequently throw away furniture, supplies, electronics, and dorm essentials that still work.
+2. **Students need essentials but face budget constraints**
+   - Many students need basic items but cannot afford them, especially during move-in/move-out periods.
+3. **Friction in posting and finding free items**
+   - Writing good listings and searching across scattered channels is slow and inconsistent.
+4. **Trust and relevance issues in open marketplaces**
+   - Existing platforms are broad and often include paid listings, spam, or non-local results.
 
-## App Idea
-E-Broke is a campus-focused sharing platform for **SFSU students** to post and claim free items.
-Think of it like a student-only free marketplace designed to reduce waste and keep resources circulating locally.
+## Why This Is Social Good
+E-Broke directly supports the “AI for Social Good” goal by:
+- Reducing landfill waste through reuse and local recirculation of goods.
+- Increasing equitable access to essential items for students with limited budgets.
+- Strengthening community connection through peer-to-peer support.
+- Using AI to lower participation barriers so more students can contribute and benefit.
 
-## Core Problem
-Students often have useful items they no longer need, while other students need those same items but cannot afford them.
-E-Broke connects both groups in a trusted, verified campus network.
+## Core Product Scope (Proposal MVP)
+- **SFSU verification and account checks** (SFSU email required).
+- **Free-only listings** (no selling allowed).
+- **AI-assisted listing creation** from a quick item photo.
+- **Relevant search and ranking** so students find the best matches quickly.
 
-## Target Users
-- Current San Francisco State University students
-- Users authenticated with an SFSU email
+## AI Implementation
+### 1) AI-Generated Listing Drafts
+- User uploads a photo.
+- Vision-capable AI suggests:
+  - title
+  - short description
+  - category
+  - condition tags (e.g., new/good/fair)
+  - relevant keywords
+- User reviews/edits before publishing.
 
-## Planning-Phase Feature Set
-1. **Quick Listing with AI Assistance**
-   - User uploads a quick photo of an item
-   - AI generates a listing description and relevant item details
+### 2) Relevance Search Support
+- AI-enriched metadata and keywords improve query-to-item matching.
+- Ranking prioritizes relevance, recency, and local usefulness.
 
-2. **Free-Only Listing Enforcement**
-   - Listings must be marked and validated as free (no selling)
+### 3) Free-Only and Safety Support (Assisted)
+- Rule checks flag price-like text and prompt users to keep listings free-only.
+- Optional moderation signals for spam/low-quality listings.
 
-3. **Relevant Search**
-   - Search and ranking to show the most relevant free listings first
+## Technology Stack (Proposed)
+### Frontend
+- **React + TypeScript** for responsive web UI.
+- **Tailwind CSS** for fast, consistent styling.
 
-4. **SFSU Verification Check**
-   - Login and account checks based on SFSU email verification
+### Backend
+- **Node.js + Express** REST API.
+- **PostgreSQL** for users, listings, and search metadata.
+- **Redis** (optional) for caching hot searches.
 
-## Future / Monetization-Optional Features (Not Initial MVP)
-- **3D model generation for listings**
-- **Wishlist prioritization alerts**
+### AI/ML Services
+- Vision + text generation API for listing draft generation.
+- Embedding/vector-based relevance support for better search ranking.
 
-## Why This Fits “AI for Social Good”
-- Reduces waste by extending product life
-- Supports students with limited budgets
-- Strengthens local campus community sharing
-- Uses AI to lower effort for posting and discovering resources
+### Auth & Security
+- SFSU email-based authentication/verification flow.
+- Server-side validation for free-only rule enforcement.
 
-## Deployment Plan
-The application will be deployed on **DigitalOcean**.
+### Deployment (DigitalOcean)
+- **DigitalOcean App Platform** for web/API deployment.
+- **DigitalOcean Managed PostgreSQL** for persistent data.
+- **DigitalOcean Spaces** for listing image storage.
+- Environment-variable based secrets management.
+
+## Non-MVP / Future Opportunities
+- 3D model generation for listings.
+- Wishlist prioritization alerts.
+- Broader social-good expansions (event buddy matching, nonprofit volunteer matching).
 
