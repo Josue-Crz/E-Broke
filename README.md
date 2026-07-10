@@ -69,8 +69,36 @@ E-Broke directly supports the “AI for Social Good” goal by:
 - **DigitalOcean Spaces** for listing image storage.
 - Environment-variable based secrets management.
 
+### Visual Diagram
+```mermaid
+flowchart LR
+    U[SFSU Student Users] --> FE[React + TypeScript Frontend]
+    FE --> BE[Node.js + Express API]
+    BE --> AUTH[SFSU Email Verification]
+    BE --> DB[(Managed PostgreSQL)]
+    BE --> CACHE[(Redis Cache - Optional)]
+    BE --> AI[Vision + Text AI Services]
+    BE --> DO[DigitalOcean App Platform]
+    BE --> SPACES[DigitalOcean Spaces]
+```
+
 ## Non-MVP / Future Opportunities
 - 3D model generation for listings.
-- Wishlist prioritization alerts.
 - Broader social-good expansions (event buddy matching, nonprofit volunteer matching).
 
+## Proposed Equity Feature: Prioritized Wishlist Alerts
+Students can opt into a **wishlist category** (for example: textbooks, dorm essentials, electronics, winter clothing). When a matching free listing is posted, alerts are prioritized to students with the highest need signal first.
+
+### How It Works
+1. Students select one or more wishlist categories and mark urgency level.
+2. Matching logic checks category fit and listing relevance.
+3. Priority score ranks notifications using:
+   - urgency level
+   - time waiting for a match
+   - recent successful claims (to reduce repeat advantage)
+4. Top-ranked students receive early alerts first, then the broader category audience.
+
+### Social Good Impact
+- Improves fairness so students with greater need are seen first for critical items.
+- Reduces first-click advantage and improves equitable access to free resources.
+- Encourages more students to donate by improving distribution confidence and impact.
