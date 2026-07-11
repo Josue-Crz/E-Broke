@@ -20,14 +20,15 @@ databases:
 services:
   - name: api
     environment_slug: node-js
-    github:
-      repo: Josue-Crz/e-Broke
+    git:
+      repo_clone_url: https://github.com/Josue-Crz/e-Broke.git
       branch: main
-      deploy_on_push: true
     source_dir: backend
     build_command: npm ci
     # Migrations run before the server starts (0001 does CREATE EXTENSION vector first).
-    run_command: npm run migrate && npm start
+    # migrate:deploy passes SSL config explicitly — DO Managed PG has a
+    # self-signed cert chain the plain node-pg-migrate CLI rejects.
+    run_command: npm run migrate:deploy && npm start
     http_port: 3000
     instance_size_slug: basic-xxs
     instance_count: 1
@@ -52,10 +53,9 @@ services:
 
 static_sites:
   - name: web
-    github:
-      repo: Josue-Crz/e-Broke
+    git:
+      repo_clone_url: https://github.com/Josue-Crz/e-Broke.git
       branch: main
-      deploy_on_push: true
     source_dir: frontend
     build_command: npm ci && npm run build
     output_dir: dist

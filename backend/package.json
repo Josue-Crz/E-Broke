@@ -7,6 +7,7 @@
     "start": "node server.js",
     "dev": "node --watch server.js",
     "migrate": "node-pg-migrate --migrations-dir migrations up",
+    "migrate:deploy": "node scripts/migrate.js",
     "migrate:down": "node-pg-migrate --migrations-dir migrations down",
     "seed": "node scripts/seed.js"
   },
