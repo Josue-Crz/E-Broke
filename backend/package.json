@@ -1,0 +1,31 @@
+{
+  "name": "e-broke-backend",
+  "version": "1.0.0",
+  "description": "e-Broke — free-items-only marketplace for SFSU students (backend)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "migrate": "node-pg-migrate --migrations-dir migrations up",
+    "migrate:down": "node-pg-migrate --migrations-dir migrations down",
+    "seed": "node scripts/seed.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.1085.0",
+    "bcrypt": "^6.0.0",
+    "connect-pg-simple": "^10.0.0",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "express-rate-limit": "^8.5.2",
+    "express-session": "^1.19.0",
+    "multer": "^2.2.0",
+    "node-pg-migrate": "^8.0.4",
+    "pg": "^8.22.0",
+    "zod": "^4.4.3"
+  }
+}
