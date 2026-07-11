@@ -1,0 +1,30 @@
+# DigitalOcean App Platform spec — template, edit repo before using.
+# Docs: https://docs.digitalocean.com/products/app-platform/reference/app-spec/
+name: e-broke-api
+region: sfo
+services:
+  - name: api
+    environment_slug: node-js
+    github:
+      repo: YOUR_GITHUB_ORG/YOUR_REPO   # ← set me
+      branch: main
+      deploy_on_push: true
+    source_dir: backend
+    build_command: npm install
+    run_command: npm start
+    http_port: 3000
+    instance_size_slug: basic-xxs
+    instance_count: 1
+    envs:
+      - key: NODE_ENV
+        value: production
+      - key: VISION_BASE_URL
+        value: https://inference.do-ai.run/v1
+      - key: VISION_MODEL
+        value: openai-gpt-5.6-luna
+      - key: EMBEDDING_MODEL
+        value: gte-large-en-v1.5
+      # Set these as encrypted secrets in the App Platform UI:
+      # VISION_API_KEY, DATABASE_URL, SESSION_SECRET,
+      # SPACES_KEY, SPACES_SECRET, SPACES_REGION, SPACES_BUCKET, SPACES_CDN_BASE_URL,
+      # CORS_ORIGIN (your frontend URL)
