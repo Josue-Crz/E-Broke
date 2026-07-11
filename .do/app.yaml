@@ -1,0 +1,71 @@
+# DigitalOcean App Platform spec — single app:
+#   /api → backend service (route prefix is stripped, so Express routes stay unprefixed)
+#   /    → frontend static site (SPA catchall to index.html)
+# Docs: https://docs.digitalocean.com/products/app-platform/reference/app-spec/
+#
+# Secrets (set as encrypted env vars in the App Platform dashboard, never in git):
+#   VISION_API_KEY, SESSION_SECRET
+#   (DATABASE_URL is injected automatically from the attached database below)
+# Optional: SPACES_* for real photo storage, UPLOADS_PUBLIC_BASE for the local
+# fallback (https://<your-app>.ondigitalocean.app/api).
+name: e-broke
+region: sfo
+
+databases:
+  - name: db
+    engine: PG
+    production: true
+    cluster_name: e-broke-db # managed PG cluster (PG 15+; pgvector supported)
+
+services:
+  - name: api
+    environment_slug: node-js
+    github:
+      repo: Josue-Crz/e-Broke
+      branch: main
+      deploy_on_push: true
+    source_dir: backend
+    build_command: npm ci
+    # Migrations run before the server starts (0001 does CREATE EXTENSION vector first).
+    run_command: npm run migrate && npm start
+    http_port: 3000
+    instance_size_slug: basic-xxs
+    instance_count: 1
+    routes:
+      - path: /api
+    envs:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        value: ${db.DATABASE_URL}
+        scope: RUN_TIME
+      - key: VISION_BASE_URL
+        value: https://inference.do-ai.run/v1
+      - key: VISION_MODEL
+        value: openai-gpt-5.6-luna
+      - key: EMBEDDING_MODEL
+        value: gte-large-en-v1.5
+      - key: SEARCH_MIN_SCORE
+        value: "0.48"
+      - key: DEMO_MODE
+        value: "true"
+
+static_sites:
+  - name: web
+    github:
+      repo: Josue-Crz/e-Broke
+      branch: main
+      deploy_on_push: true
+    source_dir: frontend
+    build_command: npm ci && npm run build
+    output_dir: dist
+    catchall_document: index.html
+    routes:
+      - path: /
+    envs:
+      - key: VITE_API_URL
+        value: /api
+        scope: BUILD_TIME
+      - key: VITE_DEMO_MODE
+        value: "true"
+        scope: BUILD_TIME
