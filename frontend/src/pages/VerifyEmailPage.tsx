@@ -3,6 +3,7 @@ import { type FormEvent, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useToast } from '../context/ToastContext'
+import { DEMO_MODE, isAllowedEmail, emailErrorMessage } from '../lib/demo'
 import { api, friendlyError } from '../lib/api'
 import type { User } from '../types'
 
@@ -14,10 +15,6 @@ interface VerifyLocationState {
 
 function safeDestination(value: unknown) {
   return typeof value === 'string' && value.startsWith('/') && !value.startsWith('//') ? value : '/'
-}
-
-function isSfsuEmail(email: string) {
-  return /^[^\s@]+@sfsu\.edu$/i.test(email.trim())
 }
 
 export function VerifyEmailPage() {
@@ -38,8 +35,8 @@ export function VerifyEmailPage() {
     const normalizedEmail = email.trim().toLowerCase()
     const normalizedCode = code.trim()
 
-    if (!isSfsuEmail(normalizedEmail)) {
-      setError('Use the @sfsu.edu email address you registered with.')
+    if (!isAllowedEmail(normalizedEmail)) {
+      setError(emailErrorMessage)
       return
     }
     if (!/^\d{6}$/.test(normalizedCode)) {
@@ -78,7 +75,25 @@ export function VerifyEmailPage() {
           <div className="dev-code" role="status">
             <KeyRound size={20} aria-hidden="true" />
             <div>
-              <strong>Local development code</strong>
+              <strong>
+                Your verification code{' '}
+                {DEMO_MODE && (
+                  <span
+                    style={{
+                      background: '#d3ff6d',
+                      color: '#18211d',
+                      borderRadius: '999px',
+                      padding: '2px 10px',
+                      fontSize: '0.7rem',
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.06em',
+                      verticalAlign: 'middle',
+                    }}
+                  >
+                    demo
+                  </span>
+                )}
+              </strong>
               <code>{devVerificationCode}</code>
               <small>The code has been filled in below. It expires in 15 minutes.</small>
             </div>

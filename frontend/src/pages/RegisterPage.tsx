@@ -3,6 +3,7 @@ import { type FormEvent, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useToast } from '../context/ToastContext'
+import { isAllowedEmail, emailErrorMessage } from '../lib/demo'
 import { api, friendlyError } from '../lib/api'
 import type { User } from '../types'
 
@@ -18,10 +19,6 @@ interface RegisterResponse {
 
 function safeDestination(value: unknown) {
   return typeof value === 'string' && value.startsWith('/') && !value.startsWith('//') ? value : '/'
-}
-
-function isSfsuEmail(email: string) {
-  return /^[^\s@]+@sfsu\.edu$/i.test(email.trim())
 }
 
 export function RegisterPage() {
@@ -47,8 +44,8 @@ export function RegisterPage() {
       setError('Enter your name.')
       return
     }
-    if (!isSfsuEmail(normalizedEmail)) {
-      setError('Use your @sfsu.edu email address.')
+    if (!isAllowedEmail(normalizedEmail)) {
+      setError(emailErrorMessage)
       return
     }
     if (password.length < 8) {
