@@ -1,7 +1,7 @@
-# E-Broke — Project Proposal
+# e-Broke — Project Proposal
 
 ## Description
-E-Broke is a student-only, free-item exchange platform for San Francisco State University (SFSU). The app helps students give away useful items they no longer need and helps other students find those items at no cost. Users sign in with SFSU email verification to keep the community local and trusted.
+e-Broke is a student-only, free-item exchange platform for San Francisco State University (SFSU). The app helps students give away useful items they no longer need and helps other students find those items at no cost. Users sign in with SFSU email verification to keep the community local and trusted.
 
 ## Pain Points Solved
 1. **Campus waste from usable items being discarded**
@@ -14,7 +14,7 @@ E-Broke is a student-only, free-item exchange platform for San Francisco State U
    - Existing platforms are broad and often include paid listings, spam, or non-local results.
 
 ## Why This Is Social Good
-E-Broke directly supports the “AI for Social Good” goal by:
+e-Broke directly supports the “AI for Social Good” goal by:
 - Reducing landfill waste through reuse and local recirculation of goods.
 - Increasing equitable access to essential items for students with limited budgets.
 - Strengthening community connection through peer-to-peer support.
