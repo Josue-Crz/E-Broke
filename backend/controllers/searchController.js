@@ -24,6 +24,10 @@ async function search(req, res) {
     throw new HttpError(502, 'AI_UNAVAILABLE', 'Search is temporarily unavailable — try again');
   }
 
+  // Drop weak matches so "N matches found" means actual matches.
+  // Tune per embedding model: gte-large puts related text ~0.55+, noise ~0.4.
+  const minScore = Number(process.env.SEARCH_MIN_SCORE || 0.45);
+
   const { rows } = await pool.query(
     `SELECT * FROM (
        SELECT l.*, u.name AS owner_name, u.avatar_url AS owner_avatar_url,
@@ -33,9 +37,10 @@ async function search(req, res) {
          FROM listings l JOIN users u ON u.id = l.user_id
         WHERE l.status = 'active' AND l.embedding IS NOT NULL
      ) ranked
+     WHERE score >= $4
      ORDER BY score DESC
      LIMIT $3`,
-    [vector, `%${q}%`, limit]
+    [vector, `%${q}%`, limit, minScore]
   );
 
   res.json({

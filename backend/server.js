@@ -45,6 +45,9 @@ app.use('/auth', require('./routes/auth'));
 app.use('/listings', require('./routes/router'));
 app.use('/', require('./routes/misc'));
 
+// Locally-stored listing photos (fallback when DO Spaces isn't configured).
+app.use('/uploads', express.static(require('path').join(__dirname, 'uploads')));
+
 // 404 for anything unmatched
 app.use((req, res) => {
   res.status(404).json({ error: { code: 'NOT_FOUND', message: 'No such endpoint' } });

@@ -5,6 +5,10 @@ const pool = require('../db/pool');
 const { HttpError, parse } = require('../utils/errors');
 const { serializeUser } = require('../utils/serialize');
 
+// DEMO_MODE=true (hackathon presentations): any email domain registers, and
+// the verification code is always returned in the response.
+const isDemoMode = () => process.env.DEMO_MODE === 'true';
+
 const registerSchema = z.object({
   name: z.string().trim().min(1).max(100),
   email: z
@@ -12,7 +16,7 @@ const registerSchema = z.object({
     .trim()
     .toLowerCase()
     .email()
-    .refine((e) => e.endsWith('@sfsu.edu'), { message: 'must be an @sfsu.edu email' }),
+    .refine((e) => isDemoMode() || e.endsWith('@sfsu.edu'), { message: 'must be an @sfsu.edu email' }),
   password: z.string().min(8).max(200),
 });
 
@@ -56,7 +60,7 @@ async function register(req, res) {
   req.session.userId = user.id;
 
   const body = { user: serializeUser(user) };
-  if (process.env.NODE_ENV !== 'production') body.devVerificationCode = code;
+  if (process.env.NODE_ENV !== 'production' || isDemoMode()) body.devVerificationCode = code;
   res.status(201).json(body);
 }
 

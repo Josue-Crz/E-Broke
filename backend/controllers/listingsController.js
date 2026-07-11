@@ -2,7 +2,7 @@ const { z } = require('zod');
 const pool = require('../db/pool');
 const { HttpError, parse } = require('../utils/errors');
 const { serializeListing } = require('../utils/serialize');
-const { checkFreeOnly } = require('../services/moderation');
+const { checkFreeOnly, llmModerate } = require('../services/moderation');
 const { embedText, toVectorLiteral } = require('../services/embeddings');
 const { createNotification, matchWishlistAlerts } = require('../services/notify');
 
@@ -43,6 +43,23 @@ async function embedListing(title, description) {
   } catch (err) {
     throw new HttpError(502, 'AI_UNAVAILABLE', 'Could not generate listing embedding — try again');
   }
+}
+
+// LLM moderation layer (after the cheap regex pass, before the embedding).
+// llmModerate fails open, so this can only reject, never error out.
+async function enforceLlmModeration(userId, data) {
+  const verdict = await llmModerate(data.title, data.description);
+  if (verdict.allowed) return;
+
+  await pool.query(
+    'INSERT INTO flagged_listings (user_id, content, category, reason) VALUES ($1, $2, $3, $4)',
+    [userId, { title: data.title, description: data.description }, verdict.category, verdict.reason]
+  );
+  throw new HttpError(
+    422,
+    verdict.category === 'price_selling' ? 'FREE_ONLY_VIOLATION' : 'MODERATION_REJECTED',
+    `Listing rejected: ${verdict.reason}`
+  );
 }
 
 // GET /listings
@@ -91,6 +108,7 @@ async function get(req, res) {
 async function create(req, res) {
   const data = parse(createSchema, req.body);
   enforceFreeOnly(data.title, data.description, data.neighborhood);
+  await enforceLlmModeration(req.session.userId, data);
   const vector = await embedListing(data.title, data.description);
 
   const { rows } = await pool.query(
