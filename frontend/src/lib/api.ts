@@ -60,6 +60,11 @@ export async function api<T>(path: string, options: RequestOptions = {}): Promis
       | null
     const legacyMessage = typeof shaped?.error === 'string' ? shaped.error : undefined
     const detail = typeof shaped?.error === 'object' ? shaped.error : undefined
+    // A 401 anywhere means the session is gone — let AuthContext reset the
+    // user so the UI can't sit in a zombie logged-in state.
+    if (response.status === 401) {
+      window.dispatchEvent(new Event('ebroke:unauthenticated'))
+    }
     throw new ApiError(
       response.status,
       detail?.code ?? `HTTP_${response.status}`,

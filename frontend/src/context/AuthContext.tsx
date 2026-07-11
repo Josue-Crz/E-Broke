@@ -44,6 +44,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       .finally(() => setLoading(false))
   }, [refreshUser])
 
+  // api.ts fires this on any 401 — clear the user so guards route to login
+  // instead of leaving a dead session looking signed in.
+  useEffect(() => {
+    const onUnauthenticated = () => setUser(null)
+    window.addEventListener('ebroke:unauthenticated', onUnauthenticated)
+    return () => window.removeEventListener('ebroke:unauthenticated', onUnauthenticated)
+  }, [])
+
   const logout = useCallback(async () => {
     try {
       await api<{ ok: boolean }>('/auth/logout', { method: 'POST' })
