@@ -11,16 +11,24 @@ const PORT = process.env.PORT || 3000;
 
 const app = express();
 
-// App Platform runs behind a proxy; needed for secure cookies in production.
-app.set('trust proxy', 1);
+const isProduction = process.env.NODE_ENV === 'production';
 
-// Frontend runs on its own origin — cookies require credentials + exact origin.
-app.use(
-  cors({
-    origin: process.env.CORS_ORIGIN || 'http://localhost:5173',
-    credentials: true,
-  })
-);
+// App Platform runs behind a proxy; needed for secure cookies in production.
+if (isProduction) {
+  app.set('trust proxy', 1);
+}
+
+// Localhost dev: frontend (:5173) is a different origin, so CORS + credentials.
+// Production: frontend and API share one App Platform domain (same-origin),
+// so no CORS — unless CORS_ORIGIN is explicitly set for an external frontend.
+if (!isProduction || process.env.CORS_ORIGIN) {
+  app.use(
+    cors({
+      origin: process.env.CORS_ORIGIN || 'http://localhost:5173',
+      credentials: true,
+    })
+  );
+}
 
 app.use(express.json({ limit: '1mb' }));
 

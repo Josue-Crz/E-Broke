@@ -15,7 +15,10 @@ async function uploadPhotoToDisk(req) {
   await fs.mkdir(LOCAL_UPLOAD_DIR, { recursive: true });
   await fs.writeFile(path.join(LOCAL_UPLOAD_DIR, filename), req.file.buffer);
   // Absolute URL so the frontend (a different origin in dev) can render it.
-  return `${req.protocol}://${req.get('host')}/uploads/${filename}`;
+  // Behind a path prefix (App Platform routes the API at /api), set
+  // UPLOADS_PUBLIC_BASE (e.g. https://your-app.ondigitalocean.app/api).
+  const base = process.env.UPLOADS_PUBLIC_BASE || `${req.protocol}://${req.get('host')}`;
+  return `${base}/uploads/${filename}`;
 }
 
 // POST /uploads/photo — multipart upload (field "photo").
